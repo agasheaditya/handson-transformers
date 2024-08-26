@@ -14,6 +14,11 @@ Implementing end to end Transformer model using PyTorch from scratch, and traini
 --- 
 
 ### Setup and Usage: 
+* Hardware used:
+  - CPU: Intel i7-10750H (2.60 GHz)
+  - RAM: 16 GB
+  - GPU: NVIDIA GeForce RTX 2060 (6 GB)
+    
 * Create virtual environment
 ```code
 virtualenv env
