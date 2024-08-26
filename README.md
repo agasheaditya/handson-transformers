@@ -10,7 +10,7 @@ Implementing end to end Transformer model using PyTorch from scratch, and traini
   - **train_beta.ipynb** --> Jupyter Notebook to train and do the sample inference on trained model
   - **trained-transformer_model.pth** --> Trained model checkpoint _(saved state dict)_
   - **Articles.xlsx** --> Dataset used to train the model (https://www.kaggle.com/datasets/asad1m9a9h6mood/news-articles)
-  - **requirements.txt** --> pip freeze of depedencies 
+  - **requirements.txt** --> pip freeze of dependencies 
 --- 
 
 ### Setup and Usage: 
