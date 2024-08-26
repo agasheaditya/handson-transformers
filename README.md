@@ -14,10 +14,20 @@ Implementing end to end Transformer model using PyTorch from scratch, and traini
 --- 
 
 ### Setup and Usage: 
+* Create virtual environment
+```code
+virtualenv env
+```
 
-- Environment setup
-- Dependencies installation
+* Activate virtual environment
+```code
+./env/Scripts/activate
+```
 
+* Installing dependancies
+```code
+pip install -r requirements.txt
+```
 ---
 
 ### Dashboard:
