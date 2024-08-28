@@ -22,4 +22,3 @@ torchvision
 tqdm==4.64.1
 transformers==4.44.0
 streamlit
-pickle
