@@ -71,7 +71,7 @@ def load_model(path:str):
     loaded_model = TransformerModel(vocab_size, embed_size, num_heads, num_encoder_layers, num_decoder_layers, forward_expansion, dropout, max_len).to(device)
 
     # Load the saved state dictionary into the model
-    loaded_model.load_state_dict(torch.load(model_load_path))
+    loaded_model.load_state_dict(torch.load(model_load_path, map_location=device, weights_only=True))
 
     # # Set the model to evaluation mode
     # loaded_model.eval()
