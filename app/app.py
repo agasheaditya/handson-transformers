@@ -1,8 +1,8 @@
 import os
 import sys
 import json
-os.chdir("D:/Python/pytorch/handson-transformers/")
-sys.path.append("D:/Python/pytorch/handson-transformers/")
+# os.chdir("D:/Python/pytorch/handson-transformers/")
+# sys.path.append("D:/Python/pytorch/handson-transformers/")
 
 import torch 
 import torch.nn as nn
@@ -53,7 +53,7 @@ st.markdown("""
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-f = open('Data/vocab.json') 
+f = open('../Data/vocab.json') 
 vocab = json.load(f) 
 vocab_size = len(vocab) # 53529
 embed_size = 512
@@ -127,7 +127,7 @@ def main():
     st.info("Here you can play around with the model which is trained on News Articles data. Also, the model is written from scratch so there can be some mistakes. This project is completely for the experiments around NLP model and how text generation using transformer works, as well as good starter point for learning PyTorch and NLP.\nThis will also help in understanding how model behaves internally and what is the base of many SOTA LLMs.")
     st.markdown("** :red[WARNING]: *This model can generate any random text which might be irrelevent, since it is trained on less text records and for less epochs!!!*")
     st.text("Sample train data:")
-    train_data = pd.read_excel("Data/Articles.xlsx")
+    train_data = pd.read_excel("../Data/Articles.xlsx")
     st.dataframe(train_data.sample(5))
     st.markdown("---")
 
