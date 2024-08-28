@@ -78,10 +78,9 @@ def load_model(path:str):
     return loaded_model
 
 
-def generate_text(model, vocab, input_text, max_length=200):
+def generate_text(model, vocab, input_text, max_length=200, temperature=1.0):
     model.eval()
     with torch.no_grad():
-        # Convert input text to tokens
         input_tokens = [vocab.get(token, vocab['<PAD>']) for token in input_text.split()]
         input_tensor = torch.tensor(input_tokens).unsqueeze(0).to(device)  # Batch size of 1
 
@@ -98,8 +97,19 @@ def generate_text(model, vocab, input_text, max_length=200):
 
             # Generate the next token
             embed_x = model.dropout(model.embedding(input_tensor) + positional_encoding)
-            output = model.encoder(embed_x, None)  # Removed src_mask argument
-            next_token = output[:, -1, :].argmax(-1).item()
+            output = model.encoder(embed_x, mask=None)
+            
+            # Apply temperature scaling
+            output = output[:, -1, :] / temperature
+            
+            # Apply softmax and sample
+            probabilities = torch.softmax(output, dim=-1)
+            next_token = torch.multinomial(probabilities, num_samples=1).item()
+            
+            # Stop if the model starts predicting padding or unknown tokens repeatedly
+            if next_token == vocab['<PAD>'] or (len(generated_text) > 1 and next_token == generated_text[-1]):
+                break
+
             generated_text.append(next_token)
 
             # Update input_tensor for the next iteration
