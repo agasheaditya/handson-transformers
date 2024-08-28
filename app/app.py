@@ -53,7 +53,7 @@ st.markdown("""
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-f = open('../Data/vocab.json') 
+f = open('handson-transformers/Data/vocab.json')  
 vocab = json.load(f) 
 vocab_size = len(vocab) # 53529
 embed_size = 512
@@ -145,7 +145,7 @@ def main():
             submitted = st.form_submit_button("Generate ✨")
         
         if prompt and submitted:
-            model = load_model("exports/trained-transformer_model.pth")
+            model = load_model("handson-transformers/exports/trained-transformer_model.pth")
             output = generate_text(model=model, vocab=vocab, input_text=prompt, max_length=200)
             st.write(f"Model Response: \n{output}")
 
