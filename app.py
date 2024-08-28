@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import pickle
 # os.chdir("D:/Python/pytorch/handson-transformers/")
 # sys.path.append("D:/Python/pytorch/handson-transformers/")
 print("working dir:",os.getcwd())
@@ -71,7 +72,7 @@ def load_model(path:str):
     loaded_model = TransformerModel(vocab_size, embed_size, num_heads, num_encoder_layers, num_decoder_layers, forward_expansion, dropout, max_len).to(device)
 
     # Load the saved state dictionary into the model
-    loaded_model.load_state_dict(torch.load(model_load_path, map_location=device, weights_only=False))
+    loaded_model.load_state_dict(torch.load(model_load_path, map_location=torch.device('cpu'), weights_only=True, pickle_module=pickle))
 
     # # Set the model to evaluation mode
     # loaded_model.eval()
