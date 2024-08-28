@@ -52,7 +52,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cpu"#"cuda" if torch.cuda.is_available() else "cpu"
 f = open('Data/vocab.json')  
 vocab = json.load(f) 
 vocab_size = len(vocab) # 53529
