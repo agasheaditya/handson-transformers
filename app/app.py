@@ -3,7 +3,7 @@ import sys
 import json
 # os.chdir("D:/Python/pytorch/handson-transformers/")
 # sys.path.append("D:/Python/pytorch/handson-transformers/")
-
+print("working dir:",os.getcwd())
 import torch 
 import torch.nn as nn
 import torch.optim as optim
