@@ -1,6 +1,10 @@
 # Hands-on Transformers
 **End-to-end implementation of Transformers using PyTorch from scratch**
 
+References:
+- Transformers Blog: https://pastoral-cloudberry-567.notion.site/Transformers-fdc33a784ae64e138bd6bf1e19f2bbdf
+- Attention is all you need: https://arxiv.org/pdf/1706.03762
+- HuggingFace Course: https://huggingface.co/learn/nlp-course/en/chapter1/3?fw=pt 
 ---
 
 Implementing end to end Transformer model using PyTorch from scratch, and training it to generate paragraphs if given a keyword or phrase as a input. 
