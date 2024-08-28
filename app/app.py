@@ -120,30 +120,36 @@ def generate_text(model, vocab, input_text, max_length=200, temperature=1.0):
         return " ".join(generated_text)
 ####################################
 
-st.title("Generate Paragraph Using Transformer Model")
-st.markdown("---")
+def main():
+    st.title("Generate Paragraph Using Transformer Model")
+    st.markdown("---")
 
-st.info("Here you can play around with the model which is trained on News Articles data. Also, the model is written from scratch so there can be some mistakes. This project is completely for the experiments around NLP model and how text generation using transformer works, as well as good starter point for learning PyTorch and NLP.\nThis will also help in understanding how model behaves internally and what is the base of many SOTA LLMs.")
-st.markdown("** :red[WARNING]: *This model can generate any random text which might be irrelevent, since it is trained on less text records and for less epochs!!!*")
-st.text("Sample train data:")
-train_data = pd.read_excel("Data/Articles.xlsx")
-st.dataframe(train_data.sample(5))
-st.markdown("---")
+    st.info("Here you can play around with the model which is trained on News Articles data. Also, the model is written from scratch so there can be some mistakes. This project is completely for the experiments around NLP model and how text generation using transformer works, as well as good starter point for learning PyTorch and NLP.\nThis will also help in understanding how model behaves internally and what is the base of many SOTA LLMs.")
+    st.markdown("** :red[WARNING]: *This model can generate any random text which might be irrelevent, since it is trained on less text records and for less epochs!!!*")
+    st.text("Sample train data:")
+    train_data = pd.read_excel("Data/Articles.xlsx")
+    st.dataframe(train_data.sample(5))
+    st.markdown("---")
 
-instr = "Input any keyword/phrase here. (E.g. business and economy)"
-st.text(instr)
-with st.form('chat_input_form'):
-    # Create two columns; adjust the ratio to your liking
-    col1, col2 = st.columns([3,1]) 
+    instr = "Input any keyword/phrase here. (E.g. business and economy)"
+    st.text(instr)
+    with st.form('chat_input_form'):
+        # Create two columns; adjust the ratio to your liking
+        col1, col2 = st.columns([3,1]) 
 
-    # Use the first column for text input
-    with col1:
-        prompt = st.text_input( help = instr, label=instr, label_visibility='collapsed')
-    # Use the second column for the submit button
-    with col2:
-        submitted = st.form_submit_button("Generate ✨")
-    
-    if prompt and submitted:
-        model = load_model("exports/trained-transformer_model.pth")
-        output = generate_text(model=model, vocab=vocab, input_text=prompt, max_length=200)
-        st.write(f"Model Response: \n{output}")
+        # Use the first column for text input
+        with col1:
+            prompt = st.text_input( help = instr, label=instr, label_visibility='collapsed')
+        # Use the second column for the submit button
+        with col2:
+            submitted = st.form_submit_button("Generate ✨")
+        
+        if prompt and submitted:
+            model = load_model("exports/trained-transformer_model.pth")
+            output = generate_text(model=model, vocab=vocab, input_text=prompt, max_length=200)
+            st.write(f"Model Response: \n{output}")
+
+
+
+if __name__ == '__main__':
+    main()
