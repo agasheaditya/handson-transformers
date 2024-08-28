@@ -71,7 +71,7 @@ def load_model(path:str):
     loaded_model = TransformerModel(vocab_size, embed_size, num_heads, num_encoder_layers, num_decoder_layers, forward_expansion, dropout, max_len).to(device)
 
     # Load the saved state dictionary into the model
-    loaded_model.load_state_dict(torch.load(model_load_path, map_location=device, weights_only=True))
+    loaded_model.load_state_dict(torch.load(model_load_path, map_location=device, weights_only=False))
 
     # # Set the model to evaluation mode
     # loaded_model.eval()
@@ -125,13 +125,14 @@ def main():
     st.markdown("---")
 
     st.info("Here you can play around with the model which is trained on News Articles data. Also, the model is written from scratch so there can be some mistakes. This project is completely for the experiments around NLP model and how text generation using transformer works, as well as good starter point for learning PyTorch and NLP.\nThis will also help in understanding how model behaves internally and what is the base of many SOTA LLMs.")
-    st.markdown("** :red[WARNING]: *This model can generate any random text which might be irrelevent, since it is trained on less text records and for less epochs!!!*")
+    st.markdown("** :red[WARNING]: *This model can generate any random text which might be irrelevent, since it is trained on less text records and for less epochs!!!")
+    
     st.text("Sample train data:")
     train_data = pd.read_excel("Data/Articles.xlsx")
     st.dataframe(train_data.sample(5))
     st.markdown("---")
 
-    instr = "Input any keyword/phrase here. (E.g. business and economy)"
+    instr = "Input any keyword/phrase here. (E.g. business and economy) [Text geeneration might be slow because, model is trained on GPU and inferencing on CPU instance.]"
     st.text(instr)
     with st.form('chat_input_form'):
         # Create two columns; adjust the ratio to your liking
