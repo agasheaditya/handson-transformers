@@ -53,7 +53,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 
-device = "cpu"#"cuda" if torch.cuda.is_available() else "cpu"
+device = "cpu" #"cuda" if torch.cuda.is_available() else "cpu"
 f = open('Data/vocab.json')  
 vocab = json.load(f) 
 vocab_size = len(vocab) # 53529
@@ -72,8 +72,8 @@ def load_model(path:str):
     loaded_model = TransformerModel(vocab_size, embed_size, num_heads, num_encoder_layers, num_decoder_layers, forward_expansion, dropout, max_len)
 
     # Load the saved state dictionary into the model
-    # loaded_model.load_state_dict(torch.load(model_load_path, map_location=torch.device('cpu'), weights_only=False)) # ,pickle_module=pickle
-    loaded_model = torch.load(model_load_path, map_location=torch.device('cpu'), weights_only=False)
+    loaded_model.load_state_dict(torch.load(model_load_path, map_location=torch.device('cpu'), weights_only=False)) # ,pickle_module=pickle
+    # loaded_model = torch.load(model_load_path, map_location=torch.device('cpu'), weights_only=False)
 
 
     # # Set the model to evaluation mode
