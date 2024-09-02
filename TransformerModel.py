@@ -15,18 +15,28 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 class MultiHeadAttention(nn.Module):
+    """
+    Multi-head attention extends the basic attention mechanism by running multiple attention mechanisms in parallel, 
+    allowing the model to focus on different parts of the sequence simulteniously. 
+    """
     def __init__(self, embed_size, num_heads):
         super(MultiHeadAttention, self).__init__()
         
-        self.embed_size = embed_size
-        self.num_heads = num_heads
-        self.head_dim = embed_size // num_heads
+        self.embed_size = embed_size ## dimentionality of the input embeddings 
+        self.num_heads = num_heads ## num of attention heads , each part will attend to different parts of the input sequence. 
+        self.head_dim = embed_size // num_heads ## dimension of each attention head
         
         assert (self.head_dim * num_heads == embed_size), "Embed size must be divisible by num_heads"
         
+        ## Linear layers: (values, keys, queries) these linear layers are used to project the input embeddings into different spaces, 
+        ## corresponding to the values, keys and queries for each attention head.
+
         self.values = nn.Linear(self.head_dim, self.head_dim, bias=False)
         self.keys = nn.Linear(self.head_dim, self.head_dim, bias=False)        
-        self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False)      
+        self.queries = nn.Linear(self.head_dim, self.head_dim, bias=False) 
+
+        ## After attention has been applied across all heads, the outputs are concatenated and passed through this linear layer to 
+        ## combine them back into single output_vector of size embed_size
         self.fc_out = nn.Linear(num_heads * self.head_dim, embed_size)
         
     
