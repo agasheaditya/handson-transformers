@@ -18,6 +18,23 @@ class MultiHeadAttention(nn.Module):
     """
     Multi-head attention extends the basic attention mechanism by running multiple attention mechanisms in parallel, 
     allowing the model to focus on different parts of the sequence simulteniously. 
+
+    Attention score is calculated using the dot product between query and keys. 
+    This gives us the score that indicates how much focus a query should place on each key..
+
+    Resulting energy tensor element indicates the importance of the particular key for the particulat query.
+
+    To prevent the model from attending certain positios (eg. padding tokens), mask tensor is applied here setting those positions to a 
+    very negative value (-1e20) so they contribute nearly zero to the attention dimesion. 
+
+    Attention scores are scaled by square root of embed_size (stabilization technique) and passes through the softmax function to get the
+    probability distribution. This tells model to how much attention to pay to each key for a given query. 
+
+    Attention weights are used to calculate the weighted sum of values, which gives us the final output for the each head. This allows model 
+    to  focus on specific parts of the input based on the attention score. 
+
+    The outputs of all attention heads are concatenated and passed through the final linear layer to produce the final output of
+    the multi-head attention layer. 
     """
     def __init__(self, embed_size, num_heads):
         super(MultiHeadAttention, self).__init__()
@@ -44,7 +61,8 @@ class MultiHeadAttention(nn.Module):
         N = queries.shape[0]
         value_len, key_len, query_len = values.shape[1], keys.shape[1], queries.shape[1]
         
-        ## split the embeddings into self.num_heads different pieces
+        ## split the embeddings into self.num_heads different pieces 
+        ## e.g. if num heads is 8 and embed_size is 512 then each head will have dimentionality of 512 // 8 = 64
         values = values.reshape(N, value_len, self.num_heads, self.head_dim)
         keys = keys.reshape(N, key_len, self.num_heads, self.head_dim)        
         queries = queries.reshape(N, query_len, self.num_heads, self.head_dim)        
@@ -54,7 +72,7 @@ class MultiHeadAttention(nn.Module):
         queries = self.queries(queries)
         
         # Check shapes before einsum
-        # print("    Queries shape:", queries.shape, "Keys shape:", keys.shape)
+        # print("k Queries shape:", queries.shape, "Keys shape:", keys.shape)
         
         ## calculate the attention scores
         energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])  # (N, num_heads, query_len, key_len)
@@ -76,6 +94,9 @@ class MultiHeadAttention(nn.Module):
 ## ENCODER LAYER
 ###########################################
 class TransformerEncoderLayer(nn.Module):
+    """
+    TransformerEncoder is a single layer in transformer encoder. Each encoder layer processes the input sequence  
+    """
     def __init__(self, embed_size, num_heads, forward_expansion, dropout):
         super(TransformerEncoderLayer, self).__init__()
 
