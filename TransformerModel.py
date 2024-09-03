@@ -95,15 +95,26 @@ class MultiHeadAttention(nn.Module):
 ###########################################
 class TransformerEncoderLayer(nn.Module):
     """
-    TransformerEncoder is a single layer in transformer encoder. Each encoder layer processes the input sequence  
+    TransformerEncoder is a single layer in transformer encoder. Each encoder layer processes the input sequence. Applying self-attention and FFNN then normalizes and adds
+    the output to the original input. 
+    
+    embed_size : size of input embeddings
+    num_heads : num of attention heads used in MultiHeadAttention layer
+    forward_expansion : factor by which the hidden layer is expanded in FFNN. if embed_size is 512 and forward_expansion is 4 then there will be 512 * 4 = 2048 units in the FFNN.
+
+
+    
     """
     def __init__(self, embed_size, num_heads, forward_expansion, dropout):
         super(TransformerEncoderLayer, self).__init__()
 
-        self.attention = MultiHeadAttention(embed_size, num_heads)
-        self.norm1 = nn.LayerNorm(embed_size)
-        self.norm2 = nn.LayerNorm(embed_size)
+        self.attention = MultiHeadAttention(embed_size, num_heads) ## allows model to focus on the different parts of input sequence when encoding it. 
+        self.norm1 = nn.LayerNorm(embed_size) ## stabilizes and accelerates the training of the model by normalizing the inputs accross the features. This helps in stablity
+        self.norm2 = nn.LayerNorm(embed_size) ## also helps in scaling stability 
 
+
+        ## gets applied to each position in the sequence independently, consist of 2 linear layers with ReLU activation in between. 
+        ## it expands the dimentionality and then projects back to embed_size.
         self.feed_forward = nn.Sequential(
             nn.Linear(embed_size, forward_expansion), 
             nn.ReLU(), 
@@ -113,13 +124,25 @@ class TransformerEncoderLayer(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x, mask):
-        attention = self.attention(x,x,x,mask)
-        x = self.dropout(self.norm1(attention + x))
+        attention = self.attention(x,x,x,mask) ## self attention applied to the input x since the self attention the queries, keys and values all come from the same input x
+        x = self.dropout(self.norm1(attention + x)) ## output of the attention is added back to the original input information while allowing the model to learn modifications 
         forward = self.feed_forward(x)
-        out = self.dropout(self.norm2(forward + x))
+        out = self.dropout(self.norm2(forward + x)) 
         return out
     
 class TransformerEncoder(nn.Module):
+
+    """
+    TransformerEncoder class is composed with multiple TransformerEncoderLayer layers stacked on top of each other. Each layer processes the input sequence, 
+    allowing the model to build complex representations. 
+
+    num_layers: num of TransformerEncoderLayer layers to stack, each layer adds more depth and complexity to the model, allowing it to learn more complex representations. 
+
+    The model applies each layer sequentially, passing the output of one layer as a input to the next. 
+
+    output: x is returned where output is rich, context aware representation of the input sequence where the each position has been encoded with information from the other 
+    relevent positions in the sequence. 
+    """
     def __init__(self, embed_size, num_layers, num_heads, forward_expansion, dropout):
         super(TransformerEncoder, self).__init__()
         self.layers = nn.ModuleList([
