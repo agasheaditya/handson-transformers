@@ -159,8 +159,17 @@ class TransformerEncoder(nn.Module):
 ###########################################
 
 class TransformerDecoderLayer(nn.Module):
+    """
+    A single layer of TransformerDecoderLayer extends the functionality of TransformerEncoderLayer by adding 2nd attention mechanism that allows the decoder to 
+    attend to the encoder's output. 
+
+    """
     def __init__(self, embed_size, num_heads, forward_expansion, dropout):
         super(TransformerDecoderLayer, self).__init__()
+
+        ## This is 1st multi head attention layer which applies self attention to decoder's input (that is, previously generated tokens). It helps the model understand the relationship 
+        ## between different parts of the output sequence. 
+
 
         self.attention = MultiHeadAttention(embed_size, num_heads)
         self.norm1 = nn.LayerNorm(embed_size)
@@ -173,12 +182,16 @@ class TransformerDecoderLayer(nn.Module):
             nn.Linear(forward_expansion, embed_size)
         )
         self.dropout = nn.Dropout(dropout)
+        ## This is 2nd MultiHeadAttention layer which allows decoder to attend the output of encoder. it enables the model to focus on relevant parts of input sequence when generating the output. 
         self.encoder_attention = MultiHeadAttention(embed_size, num_heads)
         
     def forward(self, x, value, key, src_mask, tgt_mask):
         attention = self.attention(x,x,x, tgt_mask)
+
+        ## output of self-Attention layer is added back to the original input and then normalized using LayerNorm. This is ia residual connection that helps preserve the original input information
+        ## while allowing model to learn the modifications. 
         x = self.dropout(self.norm1(attention + x))
-        
+        ## Tis attends to the encoders output, which helps decoder to use information from the input sequence when generating each token of the output sequence. 
         attention = self.attention(x,key,value, src_mask)
         x = self.dropout(self.norm2(attention + x))
         
