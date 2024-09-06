@@ -201,16 +201,26 @@ class TransformerDecoderLayer(nn.Module):
         return out        
     
 class TransformerDecoder(nn.Module):
+    """
+    TransformerDecoder is componsed of multiple TransformerDecoderLayer stacked on top of each other. Each layer process input sequence from the previous layer, allowing the model to build complex representations and generate more accurate outputs. 
+
+
+    """
     def __init__(self, embed_size, num_layers, num_heads, forward_expansion, dropout):
         super(TransformerDecoder, self).__init__()
+        ## Model applies each layer sequentially, passing output of one layer as the input to the next
         self.layers = nn.ModuleList([
             TransformerDecoderLayer(embed_size, num_heads, forward_expansion, dropout) for _ in range(num_layers)
         ])
-        
+        ## After passing through all decoder layers final output is passed through a fully connected layer. This maps the embed size to the size of vocab allowing the model to predict next token in the sequence. 
         self.fc_out = nn.Linear(embed_size, embed_size)
         
         
     def forward(self, x, enc_out, src_mask, tgt_mask):
+        """
+        Here x is embedded and partially decoded sequence is passed through each TransformerDecoderLayer. 
+        Output represents the generated sequence enriched with context from the entire input sequence and any previously generated tokens.
+        """
         for layer in self.layers:
             x = layer(x, enc_out, enc_out, src_mask, tgt_mask)
             
